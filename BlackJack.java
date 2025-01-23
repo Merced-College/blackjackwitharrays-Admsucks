@@ -63,13 +63,17 @@ public class BlackJack {
     }
 
     private static int dealInitialPlayerCards() {
-       // take two cards of the deck to deal to the player 
-        int card1 = dealCard();
-        int card2 = dealCard();
-        System.out.println("Your cards: " + RANKS[card1] + " of " + SUITS[DECK[currentCardIndex] % 4] + " and "
-                + RANKS[card2] + " of " + SUITS[card2 / 13]);
-        return cardValue(card1) + cardValue(card2);
-    }
+    // Take two cards from the deck to deal to the player
+    int card1 = dealCard();
+    int card2 = dealCard();
+
+    // Display the cards drawn
+    System.out.println("Your cards: " + RANKS[card1 % 13] + " of " + SUITS[card1 / 13] + " and "
+            + RANKS[card2 % 13] + " of " + SUITS[card2 / 13]);
+
+    // Return the total value of the two cards
+    return cardValue(card1) + cardValue(card2);
+}
 
     private static int dealInitialDealerCards() {
         //Takes another card from randomized array for the dealer
@@ -90,6 +94,7 @@ public class BlackJack {
                 // Tells you the new card you pulled
                 System.out.println("You drew a " + RANKS[newCard] + " of " + SUITS[DECK[currentCardIndex] % 4]);
                 // Tells you the specifics of the new card you pulled (like the number, and the suit)
+
                 if (playerTotal > 21) {
                 // If the player's total is over 21, then the game will not give you the option to hit or stand anymore
                     break;
@@ -104,16 +109,26 @@ public class BlackJack {
     }
 
     private static int dealerTurn(int dealerTotal) {
-        // Calculates when the dealer is allowed to stop hitting his cards
-        while (dealerTotal < 17) {
-            // (Dealer is only allowed to stop hitting if his score is 17 or over)
-            int newCard = dealCard();
-            dealerTotal += cardValue(newCard);
+    // Dealer continues hitting until the total is 17 or more
+    while (dealerTotal < 17) {
+        int newCard = dealCard();
+        int cardValue = cardValue(newCard);
+
+        // Adjust Ace value if necessary
+        if (cardValue == 11 && dealerTotal + cardValue > 21) {
+            cardValue = 1; // Treat Ace as 1 if 11 would cause a bust
         }
-        System.out.println("Dealer's total is " + dealerTotal);
-        return dealerTotal;
-        // Displays the dealer's total score
+
+        dealerTotal += cardValue;
+
+        // Display the card drawn by the dealer
+        System.out.println("Dealer drew a " + RANKS[newCard % 13] + " of " + SUITS[newCard / 13]);
     }
+
+    // Final dealer total
+    System.out.println("Dealer's total is " + dealerTotal);
+    return dealerTotal;
+}
 
     private static void determineWinner(int playerTotal, int dealerTotal) {
         if (dealerTotal > 21 || playerTotal > dealerTotal) {
@@ -133,8 +148,15 @@ public class BlackJack {
     }
 
     private static int cardValue(int card) {
-        return card < 9 ? card + 2 : 10;
+    int rank = card % 13;
+    if (rank == 0) { // Ace
+        return 11; // Default to high value
+    } else if (rank >= 9) { // Face cards
+        return 10;
+    } else {
+        return rank + 2; // Numeric cards
     }
+}
 
     int linearSearch(int[] numbers, int key) {
         int i = 0;
