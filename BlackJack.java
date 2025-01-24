@@ -18,27 +18,33 @@ public class BlackJack {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        //Intilizing the deck 
-        initializeDeck();
-        shuffleDeck();
-        currentCardIndex = 0;
-       
-        //dealing the card 
-        int playerTotal = dealInitialPlayerCards();
-        int dealerTotal = dealInitialDealerCards();
-        
-        // Scans the card the player is given 
-        playerTotal = playerTurn(scanner, playerTotal);
-        
-        // Detects if the player is over 21 and busts
-        if (playerTotal > 21) {
-            System.out.println("You busted! Dealer wins.");
-            return;
-        }
-        // Scans the card the dealer is given
-        dealerTotal = dealerTurn(dealerTotal);
-        determineWinner(playerTotal, dealerTotal);
+        String playAgain;
 
+        do {
+            //Intilizing the deck 
+            initializeDeck();
+            shuffleDeck();
+            currentCardIndex = 0;
+       
+            //dealing the card 
+            int playerTotal = dealInitialPlayerCards();
+            int dealerTotal = dealInitialDealerCards();
+        
+            // Scans the card the player is given 
+            playerTotal = playerTurn(scanner, playerTotal);
+        
+            // Detects if the player is over 21 and busts
+            if (playerTotal > 21) {
+                System.out.println("You busted! Dealer wins.");
+            } else {
+                dealerTotal = dealerTurn(dealerTotal);
+                determineWinner(playerTotal, dealerTotal);
+            }
+            System.out.println("Do you want to play again? (Yes/No)");
+            playAgain = scanner.nextLine().toLowerCase();
+        } while (playAgain.equals("yes"));
+
+        System.out.println("Thanks for playing!!! ;)");
         scanner.close();
     }
     // Initilizing the deck
@@ -166,10 +172,10 @@ public class BlackJack {
              // Detects if the dealer ties with the player
         } else {
             System.out.println("Dealer wins!");
-             // Detects if the PLAYER loses to the dealer
+             // Detects if the PLAYER loses to the dealerj
         }
-    }
 
+    }
     private static int dealCard() {
         return DECK[currentCardIndex++];
     }
